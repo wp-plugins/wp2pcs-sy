@@ -3,8 +3,8 @@ Contributors: wishinlife
 Donate link: http://syncyhome.duapp.com
 Tags:wp2pcs-sy, backup, sync, baidu, personal cloud storage, PCS, 百度网盘
 Requires at least: 3.5.1
-Tested up to: 4.0
-Stable tag: 1.3.8
+Tested up to: 4.1
+Stable tag: 1.3.8-2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,7 +74,7 @@ screenshot-5.jpg
 == Changelog ==
 
 = 1.3.8 =
-wp2pcs-sy是基于wp2pcs 1.3.8版本修改而来，主要修改内容如下：
+* wp2pcs-sy是基于wp2pcs 1.3.8版本修改而来，主要修改内容如下：
 * 1、修改了授权模式，采用自有APIkey的时候不会再向第三方网站传输APIkey和securtkey，直接和百度服务器通信，减少了泄露Securtkey的风险；使用wp2pcs-sy的APIkey的话刷新码也存储在本地（wp2pcs-sy承诺永不存储用户的refreshtoken和accesstoken），并定期刷新accesstoken，不用再手动刷新accesstoken；
 * 2、在多媒体下面增加了一个百度网盘的菜单，可以浏览百度网盘中上传目录下的文件，不用再到编辑文章页面才可以浏览到图片等，同时也可以通过此页面上传单个文件；
 * 3、多媒体-百度网盘和编辑文章插入图片的页面显示的图片全部是图片的缩略图（原版本中获取的是完整图片文件），加快了图片的浏览；

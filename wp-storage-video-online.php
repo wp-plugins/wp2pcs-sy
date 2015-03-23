@@ -28,6 +28,7 @@ function wp2pcs_video_shortcode($atts){
 	static $video_id = 1;
 	if($video_id == 1){
 		echo '<script type="text/javascript" src="http://cybertran.baidu.com/cloud/media/assets/cyberplayer/1.0/cyberplayer.min.js"></script>';
+		//echo '<script type="text/javascript" src="'.plugins_url("asset/T5PlayerWebSDK/js/cyberplayer.min.js",WP2PCS_PLUGIN_NAME).'"></script>';
 	}
 	else $video ++;
 
@@ -37,36 +38,46 @@ function wp2pcs_video_shortcode($atts){
 	$refresh = $refresh ? $refresh : 'true';
 
 	// 处理SRC中存在空格和中文的情况
-	$src_arr = explode('/',$src);
 	if(empty($src)){
 		return;
 	}
+	//start 20150323修改 wishinlife
+	/*$src_arr = explode('/',$src);
 	foreach($src_arr as $key => $uri){
-		if(preg_match('/[一-龥|\s]/u',$uri))$src_arr[$key] = rawurlencode($uri);
+		if(preg_match('/[一-龥|\s]/u',$uri)) $src_arr[$key] = rawurlencode($uri);
 	}
 	$src = implode('/',$src_arr);
+	*/
+	$video_parent = substr($src,0,strrpos($src,'/'));
+	$video_ext = substr($src,strrpos($src,'.'));
+	$video_fn =  base64_encode(substr($src, strrpos($src,'/')+1, strlen($src)-strlen($video_parent)-strlen($video_ext)-1));
+	$video_fn = str_replace('+','-',$video_fn);
+	$video_fn = str_replace('/','_',$video_fn);
+	$video_fn = str_replace('=','',$video_fn);
+	$src = $video_parent.'/'.$video_fn.$video_ext;
+	//end 20150323修改 wishinlife
 
 	$player_id = get_php_run_time();
 	$player_id = str_replace('.','',$player_id);
 
 	//$player = '<div style="background:#000;display:block;margin:0 auto;width:'.$width.'px;height:'.$height.'px;"><div id="videoplayer_'.$player_id.'"></div></div>';
-	$player = '<div style="display:table;margin:auto;width:auto;height:auto;"><div id="videoplayer_'.$player_id.'"></div></div>';
+	$player = '<div style="background:#000000;display:table;margin:auto;width:auto;height:auto;"><div id="videoplayer_'.$player_id.'"></div></div>';
 	if($refresh === 'true')$player .= '<p align="center" class="videoplayer-source"><a href="'.$src.'" target="refreshvideo" style="color:#999;font-size:0.8em;" title="刷新后重新加载本页才能观看完整的视频">刷新视频资源</a><iframe frameborder="0" framescroll="no" name="refreshvideo" style="float:right;width:1px;height:1px;overflow:hidden;"></iframe></p>';
 	$player .= '<script type="text/javascript">var player_'.$player_id.' = cyberplayer("videoplayer_'.$player_id.'").setup({
-		width:'.$width.',
-		height:'.$height.',
-		backcolor:"#000",
-		stretching:"'.$stretch.'",
-		file:"'.$src.'",
-		image:"'.$cover.'",
-		autoStart:0,
-		repeat:"none",
-		volume:100,
-		controlbar:"over",
-		ak:"'.(defined(WP2PCS_APP_KEY) ? WP2PCS_APP_KEY : 'dqSQouI90u33xGGUZzMWASZY').'",
-		sk:"'.(defined(WP2PCS_APP_SECRET) ? substr(WP2PCS_APP_SECRET,0,16) : 'Buy4OzNfX2GEIRhL').'"
+		width : '.$width.',
+		height : '.$height.',
+		backcolor : "#000000",
+		stretching : "'.$stretch.'",
+		file : "'.$src.'",
+		image : "'.$cover.'",
+		autoStart : 0,
+		repeat : "none",
+		volume : 100,
+		controlbar : "over",
+		ak : "'.(defined(WP2PCS_APP_KEY) ? WP2PCS_APP_KEY : 'dqSQouI90u33xGGUZzMWASZY').'",
+		sk : "'.(defined(WP2PCS_APP_SECRET) ? substr(WP2PCS_APP_SECRET,0,16) : 'Buy4OzNfX2GEIRhL').'"
 	});</script>';
-
+	//	flashplayer : "'.plugins_url("asset/T5PlayerWebSDK/player/cyberplayer.flash.swf",WP2PCS_PLUGIN_NAME).'",
 	return $player;
 }
 add_shortcode('video','wp2pcs_video_shortcode');
@@ -96,7 +107,7 @@ function wp_storage_print_video(){
 	}
 
 	//防盗链
-	if(get_option('wp_storage_to_pcs_outlink_protact') && !strpos($_SERVER['HTTP_REFERER'], WP2PCS_SITE_DOMAIN)) {
+	if(get_option('wp_storage_to_pcs_outlink_protact') && !strpos($_SERVER['HTTP_REFERER'], WP2PCS_SITE_DOMAIN) && !strpos($_SERVER['HTTP_REFERER'], 'cybertran.baidu.com')) {
 		return;
 	}
 	
@@ -117,6 +128,15 @@ function wp_storage_print_video(){
 
 	// 去除末尾的.m3u8，然后再判断对应的文件扩展名
 	$video_uri = substr($video_uri,0,-5);
+	//start 20150323修改 wishinlife
+	$video_parent = substr($video_uri,0,strrpos($video_uri,'/'));
+	$video_fn =  substr($video_uri, strrpos($video_uri,'/')+1, strlen($video_uri)-strlen($video_parent) - 1);
+	$video_fn = str_replace('-','+',$video_fn);
+	$video_fn = str_replace('_','/',$video_fn);
+	$video_fn = str_pad($video_fn, ceil(strlen($video_fn) / 4) * 4, '=');
+	$video_fn =  base64_decode($video_fn);
+	$video_uri= $video_parent.'/'.$video_fn;
+	//end 20150323修改 wishinlife
 	$video_uri_ext = strtolower(substr($video_uri,strrpos($video_uri,'.')+1));
 	if(!in_array($video_uri_ext,array('asf','avi','flv','mkv','mov','mp4','wmv','3gp','3g2','mpeg','ts','rm','rmvb'))){
 		if(substr($video_uri,-5) == '.m3u8'){
