@@ -28,7 +28,7 @@ function wp2pcs_video_shortcode($atts){
 	static $video_id = 1;
 	if($video_id == 1){
 		echo '<script type="text/javascript" src="http://cybertran.baidu.com/cloud/media/assets/cyberplayer/1.0/cyberplayer.min.js"></script>';
-		//echo '<script type="text/javascript" src="'.plugins_url("asset/T5PlayerWebSDK/js/cyberplayer.min.js",WP2PCS_PLUGIN_NAME).'"></script>';
+		//echo '<script type="text/javascript" src="'.plugins_url("asset/cyberplayer.min.js",WP2PCS_PLUGIN_NAME).'"></script>';
 	}
 	else $video ++;
 
@@ -101,9 +101,9 @@ function wp_storage_print_video(){
 	}
 
 	//防盗链
-	if(get_option('wp_storage_to_pcs_outlink_protact') && !strpos($_SERVER['HTTP_REFERER'], WP2PCS_SITE_DOMAIN) && !strpos($_SERVER['HTTP_REFERER'], 'cybertran.baidu.com')) {
+	/*if(get_option('wp_storage_to_pcs_outlink_protact') && !strpos($_SERVER['HTTP_REFERER'], WP2PCS_SITE_DOMAIN) && !strpos($_SERVER['HTTP_REFERER'], 'cybertran.baidu.com')) {
 		return;
-	}
+	}*/
 	
 	// 获取安装在子目录
 	$install_in_subdir = get_blog_install_in_subdir();

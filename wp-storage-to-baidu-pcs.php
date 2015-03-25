@@ -121,7 +121,7 @@ function wp_storage_to_pcs_panel(){
 			<input type="text" name="wp_storage_to_pcs_download_perfix" value="<?php echo $download_perfix; ?>" />
 			被访问<input type="text" name="wp_storage_to_pcs_download_copy" value="<?php echo get_option('wp_storage_to_pcs_download_copy'); ?>" style="width:50px;" />次以上强制缓存到本地
 		</p>
-		<p>开启防盗链：&nbsp;&nbsp;
+		<p>开启防盗链(视频无效)：&nbsp;&nbsp;
 			<input type="checkbox" name="wp_storage_to_pcs_outlink_protact" value="1" <?php if($link_protact) echo("checked");?>/> 
 		</p>
 		<p><input type="submit" value="确定" class="button-primary" /></p>
