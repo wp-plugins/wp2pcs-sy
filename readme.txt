@@ -3,7 +3,7 @@ Contributors: wishinlife
 Donate link: http://syncyhome.duapp.com
 Tags:wp2pcs-sy, backup, sync, baidu, personal cloud storage, PCS, 百度网盘
 Requires at least: 3.5.1
-Tested up to: 4.1
+Tested up to: 4.1.1
 Stable tag: 1.3.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
