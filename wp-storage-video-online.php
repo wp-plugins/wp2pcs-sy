@@ -8,7 +8,7 @@ function wp2pcs_video_src($video_path = false){
 	// video_path是指相对于后台保存的存储目录的路径
 	// 例如 $file_path = /test/test.avi
 	// 注意最前面加/
-	$video_perfix = get_option('wp_storage_to_pcs_video_perfix');
+	$video_perfix = trim(get_option('wp_storage_to_pcs_video_perfix'));
 	$video_src = "/$video_perfix/".$video_path;
 	$video_src = str_replace('//','/',$video_src);
 	return home_url($video_src);
@@ -37,25 +37,19 @@ function wp2pcs_video_shortcode($atts){
 	$stretch = $stretch ? $stretch : 'bestfit';
 	$refresh = $refresh ? $refresh : 'true';
 
-	// 处理SRC中存在空格和中文的情况
+	// 处理视频文件名，以解决文件路径中存在空格和中文的情况
 	if(empty($src)){
 		return;
 	}
-	//start 20150323修改 wishinlife
-	/*$src_arr = explode('/',$src);
-	foreach($src_arr as $key => $uri){
-		if(preg_match('/[一-龥|\s]/u',$uri)) $src_arr[$key] = rawurlencode($uri);
-	}
-	$src = implode('/',$src_arr);
-	*/
-	$video_parent = substr($src,0,strrpos($src,'/'));
+	$video_perfix = trim(get_option('wp_storage_to_pcs_video_perfix'));
+	$src = urldecode($src);
+	$src = str_replace_first(home_url('/').$video_perfix,'',$src);
 	$video_ext = substr($src,strrpos($src,'.'));
-	$video_fn =  base64_encode(substr($src, strrpos($src,'/')+1, strlen($src)-strlen($video_parent)-strlen($video_ext)-1));
+	$video_fn =  base64_encode(substr($src, 0, strlen($src)-strlen($video_ext)));
 	$video_fn = str_replace('+','-',$video_fn);
 	$video_fn = str_replace('/','_',$video_fn);
 	$video_fn = str_replace('=','',$video_fn);
-	$src = $video_parent.'/'.$video_fn.$video_ext;
-	//end 20150323修改 wishinlife
+	$src = wp2pcs_video_src($video_fn.$video_ext);
 
 	$player_id = get_php_run_time();
 	$player_id = str_replace('.','',$player_id);
@@ -128,24 +122,7 @@ function wp_storage_print_video(){
 
 	// 去除末尾的.m3u8，然后再判断对应的文件扩展名
 	$video_uri = substr($video_uri,0,-5);
-	//start 20150323修改 wishinlife
-	$video_parent = substr($video_uri,0,strrpos($video_uri,'/'));
-	$video_fn =  substr($video_uri, strrpos($video_uri,'/')+1, strlen($video_uri)-strlen($video_parent) - 1);
-	$video_fn = str_replace('-','+',$video_fn);
-	$video_fn = str_replace('_','/',$video_fn);
-	$video_fn = str_pad($video_fn, ceil(strlen($video_fn) / 4) * 4, '=');
-	$video_fn =  base64_decode($video_fn);
-	$video_uri= $video_parent.'/'.$video_fn;
-	//end 20150323修改 wishinlife
-	$video_uri_ext = strtolower(substr($video_uri,strrpos($video_uri,'.')+1));
-	if(!in_array($video_uri_ext,array('asf','avi','flv','mkv','mov','mp4','wmv','3gp','3g2','mpeg','ts','rm','rmvb'))){
-		if(substr($video_uri,-5) == '.m3u8'){
-			$video_uri = $current_uri;
-		}else{
-			return;
-		}
-	}
-
+	
 	// 当采用index.php/video时，大部分主机会跳转，丢失index.php，因此这里要做处理
 	if(strpos($video_perfix,'index.php/')===0 && strpos($video_uri,'index.php/')===false){
 		$video_perfix = str_replace_first('index.php/','',$video_perfix);
@@ -174,6 +151,16 @@ function wp_storage_print_video(){
 
 	// 如果不存在video_path，也不执行了
 	if(!$video_path){
+		return;
+	}
+	//获取视频文件原始路径
+	$video_path = str_replace('/','',$video_path);
+	$video_path = str_replace('-','+',$video_path);
+	$video_path = str_replace('_','/',$video_path);
+	$video_path = str_pad($video_path, ceil(strlen($video_path) / 4) * 4, '=');
+	$video_path =  base64_decode($video_path);
+	$video_ext = strtolower(substr($video_path,strrpos($video_path,'.')+1));
+	if(!in_array($video_ext,array('asf','avi','flv','mkv','mov','mp4','wmv','3gp','3g2','mpeg','ts','rm','rmvb'))){
 		return;
 	}
 

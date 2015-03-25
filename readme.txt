@@ -4,7 +4,7 @@ Donate link: http://syncyhome.duapp.com
 Tags:wp2pcs-sy, backup, sync, baidu, personal cloud storage, PCS, 百度网盘
 Requires at least: 3.5.1
 Tested up to: 4.1
-Stable tag: 1.3.8-2
+Stable tag: 1.3.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,10 @@ screenshot-4.jpg
 screenshot-5.jpg
 
 == Changelog ==
+
+= 1.3.9 =
+* 1、修复了audio和video文件的中文支持问题。
+* 2、修复了开启防盗链后无法访问视频的问题。
 
 = 1.3.8 =
 * wp2pcs-sy是基于wp2pcs 1.3.8版本修改而来，主要修改内容如下：

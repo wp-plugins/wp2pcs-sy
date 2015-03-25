@@ -9,7 +9,7 @@ function wp2pcs_audio_src($audio_path = false){
 	// audio_path是指相对于后台保存的存储目录的路径
 	// 例如 $file_path = /test/test.avi
 	// 注意最前面加/
-	$audio_perfix = get_option('wp_storage_to_pcs_audio_perfix');
+	$audio_perfix = trim(get_option('wp_storage_to_pcs_audio_perfix'));
 	$audio_src = "/$audio_perfix/".$audio_path;
 	$audio_src = str_replace('//','/',$audio_src);
 	return home_url($audio_src);
@@ -37,14 +37,16 @@ function wp2pcs_audio_shortcode($atts){
 	$autostart = $autostart ? $autostart : '0';
 	$loop = $loop ? $loop : 'no';
 
-	// 处理歌曲文件名，以解决文件名中存在空格和中文的情况
-	$audio_parent = substr($src,0,strrpos($src,'/'));
+	// 处理歌曲文件名，以解决文件路径中存在空格和中文的情况
+	$audio_perfix = trim(get_option('wp_storage_to_pcs_audio_perfix'));
+	$src = urldecode($src);
+	$src = str_replace_first(home_url('/').$audio_perfix,'',$src);
 	$audio_ext = substr($src,strrpos($src,'.'));
-	$audio_fn =  base64_encode(substr($src, strrpos($src,'/')+1, strlen($src)-strlen($audio_parent)-strlen($audio_ext)-1));
+	$audio_fn =  base64_encode(substr($src, 0, strlen($src)-strlen($audio_ext)));
 	$audio_fn = str_replace('+','-',$audio_fn);
 	$audio_fn = str_replace('/','_',$audio_fn);
 	$audio_fn = str_replace('=','',$audio_fn);
-	$src = $audio_parent.'/'.$audio_fn.$audio_ext;
+	$src = wp2pcs_audio_src($audio_fn.$audio_ext);
 
 	$player = '<div id="audioplayer-'.$player_id.'" class="wp2pcs-audio"></div><script type="text/javascript">AudioPlayer.embed("audioplayer-'.$player_id.'",{titles:"'.$name.'",loop:"'.$loop.'",autostart:"'.$autostart.'",soundFile:"'.$src.'"});</script>';
 
@@ -139,13 +141,13 @@ function wp_storage_print_audio(){
 	}
 
 	// 转化歌曲文件名
-	$audio_parent = substr($audio_path,0,strrpos($audio_path,'/'));
-	$audio_fn =  substr($audio_path, strrpos($audio_path,'/')+1, strlen($audio_path)-strlen($audio_parent)-strlen($file_ext) - 2);
+	$audio_path = str_replace('/','',$audio_path);
+	$audio_fn =  substr($audio_path, 0, strlen($audio_path)-strlen($file_ext) - 1);
 	$audio_fn = str_replace('-','+',$audio_fn);
 	$audio_fn = str_replace('_','/',$audio_fn);
 	$audio_fn = str_pad($audio_fn, ceil(strlen($audio_fn) / 4) * 4, '=');
 	$audio_fn =  base64_decode($audio_fn);
-	$audio_path= $audio_parent.'/'.$audio_fn.'.'.$file_ext;
+	$audio_path= $audio_fn.'.'.$file_ext;
 
 	// 获取视频路径
 	$remote_dir = get_option('wp_storage_to_pcs_remote_dir');
