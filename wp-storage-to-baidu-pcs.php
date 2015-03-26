@@ -44,9 +44,9 @@ function wp_storage_to_pcs_action(){
 		// 更新视频 /分辨率
 		$video_perfix = trim($_POST['wp_storage_to_pcs_video_perfix']);
 		update_option('wp_storage_to_pcs_video_perfix',$video_perfix);
-		$video_copy = $_POST['wp_storage_to_pcs_video_copy'];
-		if($video_copy)update_option('wp_storage_to_pcs_video_copy',$video_copy);
-		else delete_option('wp_storage_to_pcs_video_copy');
+		//$video_copy = $_POST['wp_storage_to_pcs_video_copy'];
+		//if($video_copy)update_option('wp_storage_to_pcs_video_copy',$video_copy);
+		//else delete_option('wp_storage_to_pcs_video_copy');
 		$video_size = $_POST['wp_storage_to_pcs_video_size'];
 		update_option('wp_storage_to_pcs_video_size',$video_size);
 		// 更新音乐
@@ -97,18 +97,6 @@ function wp_storage_to_pcs_panel(){
 		<p class="tishi hidden">访问前缀是指用户访问你的网站的什么URL时才会调用网盘中的图片，例如你填写的是“img”，那么用户在访问“<?php echo home_url('/img/test.jpg'); ?>”时，屏幕上就会打印在你的网盘目录“<?php echo WP2PCS_REMOTE_ROOT; ?>uploads/test.jpg”这张图片。为了提高不同空间的兼容性，默认为“?img”的形式。</p>
 		<p class="tishi hidden">强制缓存到本地：当你的某个图片或视频被访问的次数超过了你设置的这个次数，说明这个图片或视频需要经常使用，缓存到你的网站空间更有利。要使用该功能需要满足：1.你的网站空间有可写的权限；2.访问前缀中不能包含?。填写0或留空时，表示不使用这个功能。</p>
 		<p class="tishi hidden">如果你的网站开启了Memory Cache，图片的访问计数将保存在Cache中，如果没有开启Memory Cache，图片访问计数将保存至WordPress数据库中。</p>
-		<p <?php if(!VIDEO_SHORTCODE)echo 'class="tishi hidden"'; ?>>M3U8视频前缀：
-			<input type="text" name="wp_storage_to_pcs_video_perfix" value="<?php echo $video_perfix; ?>" /> 
-			被访问<input type="text" name="wp_storage_to_pcs_video_copy" value="<?php echo get_option('wp_storage_to_pcs_video_copy'); ?>" style="width:50px;" />次以上强制缓存到本地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			视频分辨率：<select name="wp_storage_to_pcs_video_size">
-				<option value="MP4_480P" <?php selected($video_size,'MP4_480P'); ?>>MP4 480P</option>
-				<option value="M3U8_854_480" <?php selected($video_size,'M3U8_854_480'); ?>>M3U8 854*480</option>
-				<option value="M3U8_640_480" <?php selected($video_size,'M3U8_640_480'); ?>>M3U8 640*480</option>
-				<option value="M3U8_480_360" <?php selected($video_size,'M3U8_480_360'); ?>>M3U8 480*360</option>
-				<option value="M3U8_480_224" <?php selected($video_size,'M3U8_480_224'); ?>>M3U8 480*224</option>
-				<option value="M3U8_320_240" <?php selected($video_size,'M3U8_320_240'); ?>>M3U8 320*240</option>
-			</select>
-		</p>
 		<p <?php if(!AUDIO_SHORTCODE)echo 'class="tishi hidden"'; ?>>MP3&nbsp;音乐前缀：
 			<input type="text" name="wp_storage_to_pcs_audio_perfix" value="<?php echo $audio_perfix; ?>" /> 
 			被访问<input type="text" name="wp_storage_to_pcs_audio_copy" value="<?php echo get_option('wp_storage_to_pcs_audio_copy'); ?>" style="width:50px;" />次以上强制缓存到本地
@@ -120,6 +108,17 @@ function wp_storage_to_pcs_panel(){
 		<p>下载访问前缀：
 			<input type="text" name="wp_storage_to_pcs_download_perfix" value="<?php echo $download_perfix; ?>" />
 			被访问<input type="text" name="wp_storage_to_pcs_download_copy" value="<?php echo get_option('wp_storage_to_pcs_download_copy'); ?>" style="width:50px;" />次以上强制缓存到本地
+		</p>
+		<p <?php if(!VIDEO_SHORTCODE)echo 'class="tishi hidden"'; ?>>M3U8视频前缀：
+			<input type="text" name="wp_storage_to_pcs_video_perfix" value="<?php echo $video_perfix; ?>" /> 
+			视频分辨率：<select name="wp_storage_to_pcs_video_size">
+				<option value="MP4_480P" <?php selected($video_size,'MP4_480P'); ?>>MP4 480P</option>
+				<option value="M3U8_854_480" <?php selected($video_size,'M3U8_854_480'); ?>>M3U8 854*480</option>
+				<option value="M3U8_640_480" <?php selected($video_size,'M3U8_640_480'); ?>>M3U8 640*480</option>
+				<option value="M3U8_480_360" <?php selected($video_size,'M3U8_480_360'); ?>>M3U8 480*360</option>
+				<option value="M3U8_480_224" <?php selected($video_size,'M3U8_480_224'); ?>>M3U8 480*224</option>
+				<option value="M3U8_320_240" <?php selected($video_size,'M3U8_320_240'); ?>>M3U8 320*240</option>
+			</select>
 		</p>
 		<p>开启防盗链(视频无效)：&nbsp;&nbsp;
 			<input type="checkbox" name="wp_storage_to_pcs_outlink_protact" value="1" <?php if($link_protact) echo("checked");?>/> 

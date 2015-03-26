@@ -4,7 +4,7 @@
 Plugin Name: WP2PCS-SY
 Plugin URI: http://syncyhome.duapp.com
 Description: 本插件基于WP2PCS插件修改而来，帮助网站站长将网站和百度网盘连接。网站的数据库、日志、网站程序文件（包括wordpress系统文件、主题、插件、上传的附件等）一并上传到百度网盘，站长可以根据自己的习惯定时备份，让你的网站数据不再丢失！可以实现把网盘作为自己的附件存储空间。相比WP2PCS插件，WP2PCS-SY主要改动内容是本地存储百度PCS的Token，不再外部服务器上存储任何Token，同时也取消了原插件中的外链功能，增加防盗链功能。
-Version: 1.3.9
+Version: 1.3.10
 Author:   <a href="http://syncyhome.duapp.com/">WishInLife</a> （原插件作者：<a href="http://www.wp2pcs.com/">否子戈</a>）
 Author URI: http://syncyhome.duapp.com
 */
@@ -27,7 +27,7 @@ define('WP2PCS_APP_SECRET',get_option('wp_to_pcs_app_secret'));
 
 define('WP2PCS_SITE_DOMAIN',$_SERVER['HTTP_HOST']);
 define('WP2PCS_REMOTE_ROOT','/apps/'.get_option('wp_to_pcs_remote_aplication').'/'.WP2PCS_SITE_DOMAIN.'/');
-define('WP2PCS_PLUGIN_VER',str_replace('.','','2015.03.25.20.00'));// 以最新一次更新的时间点（到分钟）作为版本号
+define('WP2PCS_PLUGIN_VER',str_replace('.','','2015.03.26.20.00'));// 以最新一次更新的时间点（到分钟）作为版本号
 define('WP2PCS_IS_WIN',strpos(PHP_OS,'WIN')!==false);
 define('WP2PCS_TMP_DIR',get_real_path(ABSPATH.'wp2pcs_tmp'));// WP2PCS暂时性存储目录
 define('WP2PCS_IS_WRITABLE',is_really_writable(WP2PCS_TMP_DIR));
@@ -88,7 +88,7 @@ function wp_to_pcs_corn_task_function_refresh_token() {
 	if(WP2PCS_APP_KEY && WP2PCS_APP_SECRET)
 		$result = get_by_curl("https://openapi.baidu.com/oauth/2.0/token", "grant_type=refresh_token&refresh_token=".get_option('wp_to_pcs_refresh_token')."&client_id=".WP2PCS_APP_KEY."&client_secret=".WP2PCS_APP_SECRET);
 	else
-		$result = get_by_curl('https://syncyhome.duapp.com/oauth','method=refresh_access_token&refresh_token='.get_option('wp_to_pcs_refresh_token'));
+		$result = get_by_curl('https://syncyhome.duapp.com/oauth','method=refresh_access_token&sign=wp2pcs-sy&refresh_token='.get_option('wp_to_pcs_refresh_token'));
 	$result_array = json_decode($result,true);
 	if(isset($result_array['access_token'])){
 		update_option('wp_to_pcs_access_token',$result_array['access_token']);
@@ -156,7 +156,7 @@ function wp_to_pcs_delete_options(){
 	delete_option('wp_storage_to_pcs_video_size');
 
 	delete_option('wp_storage_to_pcs_image_copy');
-	delete_option('wp_storage_to_pcs_video_copy');
+	//delete_option('wp_storage_to_pcs_video_copy');
 	delete_option('wp_storage_to_pcs_audio_copy');
 	delete_option('wp_storage_to_pcs_media_copy');
 	delete_option('wp_storage_to_pcs_download_copy');
@@ -233,7 +233,7 @@ function wp_to_pcs_action(){
 				$token_url = 'http://openapi.baidu.com/oauth/2.0/authorize?client_id='.WP2PCS_APP_KEY.'&response_type=code&redirect_uri='.$back_url.'&scope=basic,netdisk&confirm_login=1&state='.base64_encode($back_url);
 			}
 			else {
-				$token_url = 'http://syncyhome.duapp.com/oauth?from='.$back_url.'&method=auth_code';
+				$token_url = 'http://syncyhome.duapp.com/oauth?from='.$back_url.'&method=auth_code&sign=wp2pcs-sy';
 			}
 			wp_redirect($token_url);
 		}
@@ -247,7 +247,7 @@ function wp_to_pcs_action(){
 			$back_url = urlencode($back_url);
 			$result = get_by_curl('https://openapi.baidu.com/oauth/2.0/token','grant_type=authorization_code&code='.$_GET['code'].'&client_id='.WP2PCS_APP_KEY.'&client_secret='.WP2PCS_APP_SECRET.'&redirect_uri='.$back_url);
 		}else {
-			$result = get_by_curl('https://syncyhome.duapp.com/oauth','method=get_access_token&code='.$_GET['code']);
+			$result = get_by_curl('https://syncyhome.duapp.com/oauth','method=get_access_token&sign=wp2pcs-sy&code='.$_GET['code']);
 		}
 		$result_array = json_decode($result,true);
 		if(isset($result_array['access_token'])){
@@ -287,7 +287,7 @@ function wp_to_pcs_action(){
 				$token_url = 'http://openapi.baidu.com/oauth/2.0/authorize?client_id='.WP2PCS_APP_KEY.'&response_type=code&redirect_uri='.$back_url.'&scope=basic,netdisk&confirm_login=1&state='.base64_encode($back_url);
 			}
 			else {
-				$token_url = 'http://syncyhome.duapp.com/oauth?from='.$back_url.'&method=auth_code';
+				$token_url = 'http://syncyhome.duapp.com/oauth?from='.$back_url.'&method=auth_code&sign=wp2pcs-sy';
 			}
 			wp_redirect($token_url);
 		}

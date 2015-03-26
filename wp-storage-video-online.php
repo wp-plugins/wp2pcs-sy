@@ -169,59 +169,14 @@ function wp_storage_print_video(){
 	$video_path = trailing_slash_path($remote_dir).$video_path;
 	$video_path = str_replace('//','/',$video_path);
 
-	set_wp2pcs_cache();
-
-	// 将图片文件强制缓存到本地
-	// 记录被访问的次数，这个次数可以用在今后对附件的评估上面
-	$file_local_path = trailing_slash_path(WP2PCS_TMP_DIR).str_replace('/','_',$video_path).'.tmp';
-	$visit_key = 'WP2PCS_FILETMP_'.strtoupper(md5($file_local_path));
-
-	//如果开启了Memory Object则存储在内存中，访问次数不写入数据库
-	//访问次数写入Cache中，如果服务重启或清除Cache后访问次数将丢失
-	if(function_exists('wp_cache_init')) {
-		$visit_value = wp_cache_get($visit_key);
-		if(!$visit_value) {
-			wp_cache_add($visit_key, 1);
-			$visit_value = 1;
-		}
-		else
-			wp_cache_incr($visit_key, 1);
-	}
-	else {
-		//  没有开启Memory Object，访问次数写入数据库
-		$visit_value = get_option($visit_key);
-		$visit_value = ($visit_value ? $visit_value : 0);
-		$visit_value ++;
-		update_option($visit_key, $visit_value);
-	}
-	$copy_value = get_option('wp_storage_to_pcs_video_copy');
 	$video_size = get_option('wp_storage_to_pcs_video_size');
-	
-	// 如果存在缓存文件，使用它
-	if($copy_value != 0 && $copy_value != '' && file_exists($file_local_path)){
-		$file = fopen($file_local_path,"r");
-		$result = fread($file,filesize($file_local_path));
-		fclose($file);
-	}
-	// 如果不存在缓存文件，就从PCS获取，并本地化
-	else{
-		global $baidupcs;
-		$result = $baidupcs->streaming($video_path, ($video_size?$video_size:'MP4_480P'));// M3U8_854_480
+	global $baidupcs;
+	$result = $baidupcs->streaming($video_path, ($video_size?$video_size:'MP4_480P'));// M3U8_854_480
 
-		$meta = json_decode($result,true);
-		if(isset($meta['error_msg'])){
-			echo $meta['error_msg'];
-			exit;
-		}
-
-		// 下面本地化文件
-		if($copy_value != 0 && $copy_value != '' && $visit_value >= $copy_value){
-			$fopen = fopen($file_local_path,"w+");
-			if($fopen != false){
-				fwrite($fopen,$result);
-			}
-			fclose($fopen);
-		}
+	$meta = json_decode($result,true);
+	if(isset($meta['error_msg'])){
+		echo $meta['error_msg'];
+		exit;
 	}
 
 	ob_clean();
