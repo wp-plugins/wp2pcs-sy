@@ -171,7 +171,7 @@ jQuery(function($){
 				}
 				// 如果被选择的是视频，使用视频播放器【1.3.0后暂停使用】
 				else if($file_type == 'video' && $video_shortcode){
-					$html += '[video src="'+decodeURIComponent($video_src)+'.m3u8" cover="" <?php echo wp_storage_to_pcs_get_video_size();?> stretch="bestfit" refresh="false"]';
+					$html += '[video src="'+decodeURIComponent($video_src)+'.m3u8" cover="" <?php echo wp_storage_to_pcs_get_video_size();?> stretch="uniform" refresh="false"]'; //stretch="bestfit"
 				}
 				// 如果被选择的是音乐，使用音频播放器【1.3.0后暂停使用】
 				else if($file_type == 'audio' && $audio_shortcode){

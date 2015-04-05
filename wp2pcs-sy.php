@@ -4,7 +4,7 @@
 Plugin Name: WP2PCS-SY
 Plugin URI: http://syncyhome.duapp.com
 Description: 本插件基于WP2PCS插件修改而来，帮助网站站长将网站和百度网盘连接。网站的数据库、日志、网站程序文件（包括wordpress系统文件、主题、插件、上传的附件等）一并上传到百度网盘，站长可以根据自己的习惯定时备份，让你的网站数据不再丢失！可以实现把网盘作为自己的附件存储空间。相比WP2PCS插件，WP2PCS-SY主要改动内容是本地存储百度PCS的Token，不再外部服务器上存储任何Token，同时也取消了原插件中的外链功能，增加防盗链功能。
-Version: 1.3.10
+Version: 1.3.10-2
 Author:   <a href="http://syncyhome.duapp.com/">WishInLife</a> （原插件作者：<a href="http://www.wp2pcs.com/">否子戈</a>）
 Author URI: http://syncyhome.duapp.com
 */

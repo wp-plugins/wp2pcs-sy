@@ -27,14 +27,15 @@ function wp2pcs_video_shortcode($atts){
 
 	static $video_id = 1;
 	if($video_id == 1){
-		echo '<script type="text/javascript" src="http://cybertran.baidu.com/cloud/media/assets/cyberplayer/1.0/cyberplayer.min.js"></script>';
+		echo '<script src="'.plugins_url("/asset/player.js",WP2PCS_PLUGIN_NAME).'"></script>';
+		echo '<script type="text/javascript" src="http://cybertran.baidu.com/cloud/media/assets/cyberplayer/1.0/cyberplayer.html5.min.js"></script>';
 		//echo '<script type="text/javascript" src="'.plugins_url("asset/cyberplayer.min.js",WP2PCS_PLUGIN_NAME).'"></script>';
 	}
 	else $video ++;
 
 	$width = $width ? $width : '640';
 	$height = $height ? $height : '480';
-	$stretch = $stretch ? $stretch : 'bestfit';
+	$stretch = $stretch ? $stretch : 'uniform'; //'bestfit';
 	$refresh = $refresh ? $refresh : 'true';
 
 	// 处理视频文件名，以解决文件路径中存在空格和中文的情况
@@ -57,21 +58,31 @@ function wp2pcs_video_shortcode($atts){
 	//$player = '<div style="background:#000;display:block;margin:0 auto;width:'.$width.'px;height:'.$height.'px;"><div id="videoplayer_'.$player_id.'"></div></div>';
 	$player = '<div style="background:#000000;display:table;margin:auto;width:auto;height:auto;"><div id="videoplayer_'.$player_id.'"></div></div>';
 	if($refresh === 'true')$player .= '<p align="center" class="videoplayer-source"><a href="'.$src.'" target="refreshvideo" style="color:#999;font-size:0.8em;" title="刷新后重新加载本页才能观看完整的视频">刷新视频资源</a><iframe frameborder="0" framescroll="no" name="refreshvideo" style="float:right;width:1px;height:1px;overflow:hidden;"></iframe></p>';
-	$player .= '<script type="text/javascript">var player_'.$player_id.' = cyberplayer("videoplayer_'.$player_id.'").setup({
-		width : '.$width.',
-		height : '.$height.',
-		backcolor : "#000000",
-		stretching : "'.$stretch.'",
-		file : "'.$src.'",
-		image : "'.$cover.'",
-		autoStart : 0,
-		repeat : "none",
-		volume : 100,
-		controlbar : "over",
-		ak : "'.(defined(WP2PCS_APP_KEY) ? WP2PCS_APP_KEY : 'dqSQouI90u33xGGUZzMWASZY').'",
-		sk : "'.(defined(WP2PCS_APP_SECRET) ? substr(WP2PCS_APP_SECRET,0,16) : 'Buy4OzNfX2GEIRhL').'"
-	});</script>';
-	//	flashplayer : "'.plugins_url("asset/T5PlayerWebSDK/player/cyberplayer.flash.swf",WP2PCS_PLUGIN_NAME).'",
+	$player .= '<script type="text/javascript">
+	var ua = navigator.userAgent,
+		isandroid = ua.indexOf("Android") > -1 || ua.indexOf("Linux") > -1,
+		isiPhone = ua.indexOf("iPhone") > -1,
+		isiPad = ua.indexOf("iPad") > -1,
+		ismobile = isandroid||isiPhone||isiPad;
+	if(ismobile){
+		document.getElementById("videoplayer_'.$player_id.'").innerHTML =\'<video src="'.$src.'" controls="controls" width="'.$width.'" height="'.$height.'"></video>\';
+	}else{
+		var player_'.$player_id.' = cyberplayer("videoplayer_'.$player_id.'").setup({
+			width : '.$width.',
+			height : '.$height.',
+			backcolor : "#000000",
+			stretching : "'.$stretch.'",
+			file : "'.$src.'",
+			image : "'.$cover.'",
+			autoStart : 0,
+			repeat : "none",
+			volume : 100,
+			controlbar : "over",
+			ak : "'.(defined(WP2PCS_APP_KEY) ? WP2PCS_APP_KEY : 'dqSQouI90u33xGGUZzMWASZY').'",
+			sk : "'.(defined(WP2PCS_APP_SECRET) ? substr(WP2PCS_APP_SECRET,0,16) : 'Buy4OzNfX2GEIRhL').'"
+		});
+	}</script>';
+		//falshplayer: "http://pan.baidu.com/res/static/thirdparty/flashvideo/player/cyberplayer.swf",
 	return $player;
 }
 add_shortcode('video','wp2pcs_video_shortcode');
