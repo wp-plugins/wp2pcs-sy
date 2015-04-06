@@ -1,6 +1,6 @@
 ﻿=== WP2PCS-SY （WordPress连接到网盘） ===
 Contributors: wishinlife
-Donate link: http://syncyhome.duapp.com
+Donate link: http://syncyhome.duapp.com/index.php/donate/
 Tags:wp2pcs-sy, backup, sync, baidu, personal cloud storage, PCS, 百度网盘
 Requires at least: 3.5.1
 Tested up to: 4.1.1
