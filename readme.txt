@@ -4,7 +4,7 @@ Donate link: http://syncyhome.duapp.com
 Tags:wp2pcs-sy, backup, sync, baidu, personal cloud storage, PCS, 百度网盘
 Requires at least: 3.5.1
 Tested up to: 4.1.1
-Stable tag: 1.3.10-2
+Stable tag: 1.3.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,9 @@ screenshot-4.jpg
 screenshot-5.jpg
 
 == Changelog ==
+
+= 1.3.11 =
+* 1、修正了视频播放支持移动设备，如ipad、iphone、安卓手机等。
 
 = 1.3.10 =
 * 1、修复了视频文件被缓存后一段时间无法访问的问题，同时因缓存的是视频播放列表文件存在访问失效，取消m3u8文件的缓存。
