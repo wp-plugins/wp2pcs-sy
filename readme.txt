@@ -1,10 +1,10 @@
 ﻿=== WP2PCS-SY （WordPress连接到网盘） ===
 Contributors: wishinlife
-Donate link: http://syncyhome.duapp.com/index.php/donate/
+Donate link: http://www.syncy.cn/index.php/donate/
 Tags:wp2pcs-sy, backup, sync, baidu, personal cloud storage, PCS, 百度网盘
 Requires at least: 3.5.1
-Tested up to: 4.1.1
-Stable tag: 1.3.11
+Tested up to: 4.2.2
+Stable tag: 1.3.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +16,7 @@ WP2PCS-SY是基于WP2PCS插件修改而来，在原版本的基础上取消了�
 WP2PCS-SY将你的WordPress定时备份到百度网盘，把百度网盘作为附件存储空间，解决你的网站后顾之忧。
 
 WP2PCS官方网站 http://www.wp2pcs.com <br />
-WP2PCS-SY官方网站：http://syncyhome.duapp.com
+WP2PCS-SY官方网站：http://www.syncy.cn
 
 <strong>修改内容如下：</strong><br />
 1、修改了授权模式，采用自有APIkey的时候不会再向第三方网站传输APIkey和securtkey，直接和百度服务器通信，减少了泄露Securtkey的风险；使用wp2pcs-sy的APIkey的话刷新码也存储在本地（wp2pcs-sy承诺永不存储用户的refreshtoken和accesstoken），并定期刷新accesstoken，不用再手动刷新accesstoken；<br />
@@ -72,6 +72,9 @@ screenshot-4.jpg
 screenshot-5.jpg
 
 == Changelog ==
+
+= 1.3.12 =
+* 1、修改服务器网址，所有服务迁移至自有域名www.syncy.cn上。
 
 = 1.3.11 =
 * 1、修正了视频播放支持移动设备，如ipad、iphone、安卓手机等。
